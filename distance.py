@@ -43,9 +43,9 @@ smoke_1080p = eval(open(getcwd()+'/smoke1080.txt','r').read())
 def molly_overlay():
     global molly
     molly_label = Tk()
-    molly = Label(molly_label, text='-', font=('Elephant', '10'), fg='black', bg='red')
+    molly = Label(molly_label, text='-', font=('Libre Bodoni', '10'), fg='black', bg='red')
     molly.master.overrideredirect(True)
-    molly.master.geometry("+100+0")
+    molly.master.geometry("+400-0")
     molly.master.wm_attributes("-topmost", True)
     molly.master.wm_attributes("-disabled", True)
     molly.master.wm_attributes("-transparentcolor", "white")
@@ -56,9 +56,9 @@ def molly_overlay():
 def smoke_overlay():
     global smoke
     smoke_label = Tk()
-    smoke = Label(smoke_label, text='-', font=('Elephant', '10'), fg='black', bg='red')
+    smoke = Label(smoke_label, text='-', font=('Libre Bodoni', '10'), fg='black', bg='red')
     smoke.master.overrideredirect(True)
-    smoke.master.geometry("-100+0")
+    smoke.master.geometry("-400-0")
     smoke.master.wm_attributes("-topmost", True)
     smoke.master.wm_attributes("-disabled", True)
     smoke.master.wm_attributes("-transparentcolor", "white")
