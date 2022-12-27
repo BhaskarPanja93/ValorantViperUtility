@@ -1,21 +1,25 @@
 try:
-    import PIL
-    import pyautogui
-    import tkinter
+    from PIL import Image
+    from requests import get
+    from pyautogui import locateOnScreen, size
+    from tkinter import Tk, Label
 except:
     import pip
     pip.main(['install', 'pyautogui'])
     pip.main(['install', 'tkinter'])
     pip.main(['install', 'opencv_python'])
     pip.main(['install', 'pillow'])
+    pip.main(['install', 'requests'])
     del pip
 
+from tempfile import gettempdir
 from tkinter import Tk, Label
 from time import sleep
 from threading import Thread
 from pyautogui import locateOnScreen, size
-from os import getcwd, system as system_caller
+from os import system as system_caller
 from PIL import Image
+from requests import get
 
 fps = 10
 map_name = None
@@ -28,7 +32,6 @@ sky_region_above = (int(0.491 * screen_res[0]), 0, int(0.0162 * screen_res[0]), 
 sky_region_below = (int(0.491 * screen_res[0]), int(0.056 * screen_res[1]), int(0.016 * screen_res[0]), int(0.38333 * screen_res[1]))
 
 all_images = {}
-sky_pixel_location = f"{getcwd()}/{screen_res[1]}p sky/"
 extension = '.PNG'
 maps = {'1': 'Ascent', '2': 'Bind', '3': 'Breeze', '4': 'Haven', '5': 'Icebox', '6': 'Split'}
 
@@ -87,10 +90,8 @@ def update_displayed_values(y, molly_dist=None, smoke_dist=None):
 
 def pixel_finder():
     global map_name, all_images
-    sky_pixel_location = f"{getcwd()}/{screen_res[1]}p sky/"
-    extension = '.PNG'
     if map_name and map_name != 'Stop Bot':
-        image_name = f"{sky_pixel_location}{map_name}{extension}"
+        image_name = f"{map_name}{extension}"
         sky_pixel_coordinates = locateOnScreen(all_images[image_name], region=sky_region_below, confidence=0.7)
         if sky_pixel_coordinates:
             x, y, x_thick, y_thick = sky_pixel_coordinates
@@ -122,15 +123,6 @@ def main_thread():
             if map_name and map_name != 'Stop Bot':
                 pixel_finder()
                 sleep(1 / fps)
-
-
-Thread(target=create_smoke_overlay).start()
-sleep(0.1)
-Thread(target=create_molly_overlay).start()
-sleep(0.1)
-Thread(target=map_selector).start()
-sleep(0.1)
-Thread(target=main_thread).start()
 
 
 molly = {(0, 13): 68,
@@ -225,5 +217,16 @@ for _range in molly:
         molly_1080p[_] = molly[_range]
 
 for _map in maps.values():
-    image_name = f"{sky_pixel_location}{_map}{extension}"
-    all_images[image_name] = Image.open(image_name)
+    image_name = f"{_map}{extension}"
+    with open(gettempdir()+'\\'+image_name, 'wb') as img_file:
+        img_file.write(get(f"https://raw.githubusercontent.com/BhaskarPanja93/ValorantViperUtility/master/1080p%20sky/{_map}.PNG").content)
+        img_file.close()
+    all_images[image_name] = Image.open(gettempdir()+'\\'+image_name)
+
+Thread(target=create_smoke_overlay).start()
+sleep(0.1)
+Thread(target=create_molly_overlay).start()
+sleep(0.1)
+Thread(target=map_selector).start()
+sleep(0.1)
+Thread(target=main_thread).start()
